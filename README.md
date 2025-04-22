@@ -217,15 +217,15 @@ $L$ be the list of means of the distributions for Low prices. We have:
 
 $$ adjusted_H = Q_H(p_H) $$
 
-$` adjusted_L = Q_L(p_H) `$
+$$ adjusted_L = Q_L(p_H) $$
 
 And the stoploss is adjusted by:
 
-$` adjusted\_stoploss = max(Q_H(p\_H + p\_stoploss)) `$
+$$ adjusted_{stoploss} = max(Q_H(p_H + p_stoploss)) $$
 
 in case of SHORT position, or:
 
-$` adjusted\_stoploss = min(Q_L(p\_L - p\_stoploss)) `$
+$$ adjusted_{stoploss} = min(Q_L(p_L - p_stoploss)) $$
 
 in case of LONG position.
 
