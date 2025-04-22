@@ -221,32 +221,32 @@ $$ adjusted_L = Q_L(p_H) $$
 
 And the stoploss is adjusted by:
 
-$$ adjusted_{stoploss} = max(Q_H(p_H + p_stoploss)) $$
+$$ adjusted_{stoploss} = max(Q_H(p_H + p_{stoploss})) $$
 
 in case of SHORT position, or:
 
-$$ adjusted_{stoploss} = min(Q_L(p_L - p_stoploss)) $$
+$$ adjusted_{stoploss} = min(Q_L(p_L - p_{stoploss})) $$
 
 in case of LONG position.
 
 ### Optuna
 - Criterion: maximum ROI
-- Sampler: SPESampler
+- Sampler: TPESampler
 - Number of startup trails: 100
 - Number of trails: 1000
 - Number of parallel processes: 20
 - Parameters to search for:
-    - p_H
-    - p_L
-    - p_stoploss
+    - $p_H$
+    - $p_L$ 
+    - $p_{stoploss}$
     - using_dp
 
 ### Best Parameter Set
 | **Parameter** 	|      **Value**      	|
 |:-------------:	|:-------------------:	|
-|    p_H    	    |         0.43 	        |
-|     p_L    	    |         0.62        	|
-|   p_stoploss  	|         0.5         	|
+|    $p_H$    	    |         0.43 	        |
+|     $p_L$    	    |         0.62        	|
+|   $p_{stoploss}$  	|         0.5         	|
 |    using_dp   	|        False        	|
 
 
