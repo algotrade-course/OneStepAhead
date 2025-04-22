@@ -214,16 +214,18 @@ $$Q(p) = F^{-1}_X (p)$$
 
 Let $H$ be the list of means of the distributions for High prices, and
 $L$ be the list of means of the distributions for Low prices. We have:
-$$\text{adjusted\_H} = Q\_H(\text{p\_H}) $$
-$$\text{adjusted\_L} = Q\_L(\text{p\_L}) $$
+
+$` \text{adjusted\_H} = Q_H(\text{p\_H}) `$
+
+$` \text{adjusted\_L} = Q_L(\text{p\_L}) `$
 
 And the stoploss is adjusted by:
 
-$$\text{adjusted\_stoploss} = max(Q\_H(\text{p\_H + p\_stoploss})) $$
+$$\text{adjusted\_stoploss} = max(Q_H(\text{p\_H + p\_stoploss})) $$
 
 in case of SHORT position, or:
 
-$$\text{adjusted\_stoploss} = min(Q\_L(\text{p\_L - p\_stoploss})) $$
+$$\text{adjusted\_stoploss} = min(Q_L(\text{p\_L - p\_stoploss})) $$
 
 in case of LONG position.
 
