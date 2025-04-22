@@ -1,0 +1,6 @@
+Trades: 2721
+Win rate: 4.8879%
+Assest: 1264.9775390625
+accum_return_rate: 26.4978%
+maximum drawdown: -15.3068%
+sharpe: 0.9865
