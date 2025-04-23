@@ -1,8 +1,14 @@
 # OneStepAhead
 
 ## Abstraction
+This project applies machine learning to predict the future trend in the VN30 Futures Index, making it actively following the trend without lagging behind like other common momentum strategies. The backtest results show promising performance.
+
 
 ## Introduction
+The futures market has high votility, resulting in high returns and also huge risk. Common momentum strategies rely on indicators to make decisions. However, as indicators only reflect past states based on past data, they often late to the trend.
+
+With the raise of machine learning in many fields, particularly in time-series forecasting, we are motivated to utilize it for solving the lagging problem of momentum strategies. 
+
 
 ## Trading (Algorithm) Hypotheses
 Prediction model: a customized Time Series Transformer model.
