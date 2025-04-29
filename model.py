@@ -43,7 +43,7 @@ class CustomTransformerModel(TimeSeriesTransformerForPrediction):
         static_real_features: Optional[torch.Tensor] = None,
         output_attentions: Optional[bool] = None,
         output_hidden_states: Optional[bool] = None,
-    ) -> List[torch.Tensor]:
+    ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         r"""
         Predict the means and standard deviations of the probability distribution of High and Low values.
 
@@ -76,7 +76,7 @@ class CustomTransformerModel(TimeSeriesTransformerForPrediction):
         repeated_scale = scale.repeat_interleave(repeats=num_parallel_samples, dim=0)
 
         repeated_past_values = (
-            past_values.repeat_interleave(repeats=num_parallel_samples, dim=0)[:, :, 1 : 3] - repeated_loc[:, :, 1 : 3]
+            past_values.repeat_interleave(repeats=num_parallel_samples, dim=0) - repeated_loc
         ) / repeated_scale
 
         expanded_static_feat = static_feat.unsqueeze(1).expand(-1, future_time_features.shape[1], -1)
@@ -87,6 +87,7 @@ class CustomTransformerModel(TimeSeriesTransformerForPrediction):
         future_samples = []
         means = []
         stds = []
+        dfs = []
 
         # greedy decoding
         for k in range(self.config.prediction_length):
@@ -105,11 +106,12 @@ class CustomTransformerModel(TimeSeriesTransformerForPrediction):
             dec_last_hidden = dec_output.last_hidden_state
 
             params = self.parameter_projection(dec_last_hidden[:, -1:])
-            distr = self.output_distribution(params, loc=repeated_loc[:, :, 1 : 3], scale=repeated_scale[:, :, 1 : 3])
+            distr = self.output_distribution(params, loc=repeated_loc, scale=repeated_scale)
             next_sample = distr.sample()
 
             means.append(distr.mean[::num_parallel_samples])
             stds.append(distr.stddev[::num_parallel_samples])
+            dfs.append(distr.base_dist.base_dist.df[::num_parallel_samples])
 
             repeated_past_values = torch.cat(
                 (repeated_past_values, (next_sample - repeated_loc) / repeated_scale), dim=1
@@ -130,7 +132,10 @@ class CustomTransformerModel(TimeSeriesTransformerForPrediction):
         concat_stds = torch.cat(stds, dim=1).reshape(
             (-1, self.config.prediction_length) + self.target_shape,
         )
-        return [concat_means, concat_stds]
+        concat_dfs = torch.cat(dfs, dim=1).reshape(
+            (-1, self.config.prediction_length) + self.target_shape,
+        )
+        return concat_means, concat_stds, concat_dfs
 
 
 class CustomAutoformerModel(AutoformerForPrediction):
@@ -230,10 +235,4 @@ class CustomAutoformerModel(AutoformerForPrediction):
         # print(means.size())
         # print(stds.size())
 
-        # return SampleTSPredictionOutput(
-        #     sequences=future_samples.reshape(
-        #         (-1, num_parallel_samples, self.config.prediction_length) + self.target_shape,
-        #     )
-        # )
-
-        return [means, stds]
+    

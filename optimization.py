@@ -29,6 +29,7 @@ memory = Memory("./cachedir", verbose=0)
 def predict(model, dataset: StockPriceDateset) -> Tuple[torch.Tensor, torch.Tensor]:
     means_list = []
     stds_list = []
+    dfs_list = []
 
     dataloader = DataLoader(dataset, batch_size=16, shuffle=False, num_workers=4)
 
@@ -39,7 +40,7 @@ def predict(model, dataset: StockPriceDateset) -> Tuple[torch.Tensor, torch.Tens
         past_masks = past_masks.to(device)
         future_additional_features = future_additional_features.to(device)
 
-        [means, stds] = model.generate(
+        means, stds, dfs = model.generate(
             past_values=past_values, 
             past_time_features=past_additional_features, 
             past_observed_mask=past_masks, 
@@ -48,16 +49,18 @@ def predict(model, dataset: StockPriceDateset) -> Tuple[torch.Tensor, torch.Tens
 
         means_list.append(means)
         stds_list.append(stds)
+        dfs_list.append(dfs)
         print(f"Predicting: {i + 1}/{len(dataloader)}", end='\r')
     print()
 
     # (dataset_len, 50, 2)
     means = torch.cat(means_list).permute((0, 2, 1)).cpu().numpy()
     stds = torch.cat(stds_list).permute((0, 2, 1)).cpu().numpy()
+    dfs = torch.cat(stds_list).permute((0, 2, 1)).cpu().numpy()
 
     torch.cuda.empty_cache()
 
-    return (means, stds)
+    return stds, means, dfs
 
 @memory.cache
 def get_adjusted_highs(p):
@@ -164,7 +167,7 @@ if __name__ == "__main__":
 
     dataset = in_sample_set
     # (dataset_len, 2, 50)
-    (means, stds) = predict(model, dataset)
+    means, stds, dfs = predict(model, dataset)
 
 
     # create optuna study

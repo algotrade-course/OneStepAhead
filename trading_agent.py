@@ -212,7 +212,7 @@ class TradingAgent():
         past_masks = past_masks.unsqueeze(0).to(device)
         future_additional_features = future_additional_features.unsqueeze(0).to(device)
 
-        [means, stds] = self.model.generate(
+        means, _, _ = self.model.generate(
             past_values=past_values, 
             past_time_features=past_additional_features, 
             past_observed_mask=past_masks, 
@@ -387,7 +387,7 @@ class OptimizedTradingAgent(TradingAgent):
             future_additional_features = future_additional_features.unsqueeze(0).to(device)
 
             # Predict future highs and lows
-            [means, stds] = self.model.generate(
+            means, stds, dfs = self.model.generate(
                 past_values=past_values, 
                 past_time_features=past_additional_features, 
                 past_observed_mask=past_masks, 
@@ -396,18 +396,19 @@ class OptimizedTradingAgent(TradingAgent):
 
             means = means.cpu().numpy().squeeze(0).T
             stds = stds.cpu().numpy().squeeze(0).T
+            dfs = dfs.cpu().numpy().squeeze(0).T
 
             # adjust prices
             adjusted_prices = np.zeros_like(means)
-            adjusted_prices[0, :] = student_t_icdf(self.p_value_of_highs, means[0, :], stds[0, :]) # Highs
-            adjusted_prices[1, :] = student_t_icdf(self.p_value_of_lows, means[1, :], stds[1, :]) # Lows
+            adjusted_prices[0, :] = student_t_icdf(self.p_value_of_highs, means[0, :], stds[0, :], dfs[0, :]) # Highs
+            adjusted_prices[1, :] = student_t_icdf(self.p_value_of_lows, means[1, :], stds[1, :], dfs[1, :]) # Lows
 
             # print(f"highs: max {np.max(adjusted_prices[0, :])} | min {np.min(adjusted_prices[0, :])}")
             # print(f"lows: max {np.max(adjusted_prices[1, :])} | min {np.min(adjusted_prices[1, :])}")
 
             adjusted_stoploss = np.zeros_like(means)
-            adjusted_stoploss[0, :] = student_t_icdf(self.p_value_of_highs + self.p_diff_of_stoploss, means[0, :], stds[0, :]) # Highs
-            adjusted_stoploss[1, :] = student_t_icdf(self.p_value_of_lows - self.p_diff_of_stoploss, means[1, :], stds[1, :]) # Lows
+            adjusted_stoploss[0, :] = student_t_icdf(self.p_value_of_highs + self.p_diff_of_stoploss, means[0, :], stds[0, :], dfs[0, :]) # Highs
+            adjusted_stoploss[1, :] = student_t_icdf(self.p_value_of_lows - self.p_diff_of_stoploss, means[1, :], stds[1, :], dfs[1, :]) # Lows
 
         else:
             adjusted_prices = np.array(adjusted_prices) # copy

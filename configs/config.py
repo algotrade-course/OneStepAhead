@@ -25,7 +25,7 @@ model_config = TimeSeriesTransformerConfig(
     encoder_layers=2,
     decoder_layers=2,
     scaling="std",
-    num_parallel_samples=100
+    num_parallel_samples=32
 )
 
 
