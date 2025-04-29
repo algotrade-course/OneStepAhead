@@ -16,8 +16,6 @@ from model import CustomTransformerModel, load_checkpoint
 from trading_agent import OptimizedTradingAgent
 from backtest import backtest
 
-from typing import List, Tuple
-
 
 STORAGE_FILE = "optuna_study.db"
 STORAGE_PATH = f"sqlite:///{STORAGE_FILE}"
@@ -26,7 +24,7 @@ STORAGE_PATH = f"sqlite:///{STORAGE_FILE}"
 # cache 
 memory = Memory("./cachedir", verbose=0)
 @memory.cache(ignore=["model", "dataset"])
-def predict(model, dataset: StockPriceDateset) -> Tuple[torch.Tensor, torch.Tensor]:
+def predict(model, dataset: StockPriceDateset) -> tuple[torch.Tensor, torch.Tensor]:
     means_list = []
     stds_list = []
     dfs_list = []
@@ -64,14 +62,14 @@ def predict(model, dataset: StockPriceDateset) -> Tuple[torch.Tensor, torch.Tens
 
 @memory.cache
 def get_adjusted_highs(p):
-    return student_t_icdf(p, means[:, 0, :], stds[:, 0, :])
+    return student_t_icdf(p, means[:, 0, :], stds[:, 0, :], dfs[:, 0, :])
 
 @memory.cache
 def get_adjusted_lows(p):
-    return student_t_icdf(p, means[:, 1, :], stds[:, 1, :])
+    return student_t_icdf(p, means[:, 1, :], stds[:, 1, :], dfs[:, 1, :])
 
 
-def get_adjusted_prices_and_stoploss(p_highs: float, p_lows: float, p_stoploss: float) -> Tuple[np.ndarray, np.ndarray]:
+def get_adjusted_prices_and_stoploss(p_highs: float, p_lows: float, p_stoploss: float) -> tuple[np.ndarray, np.ndarray]:
     p_stoploss_highs = p_highs + p_stoploss
     p_stoploss_lows = p_lows - p_stoploss
 

@@ -48,7 +48,7 @@ class CustomTransformerModel(TimeSeriesTransformerForPrediction):
         Predict the means and standard deviations of the probability distribution of High and Low values.
 
         Returns:
-            List[torch.Tensor]: means and stds, shape of each: (batch size, prediction_length, input features).
+            list[torch.Tensor]: means and stds, shape of each: (batch size, prediction_length, input features).
         """
         
         outputs = self(
@@ -150,12 +150,12 @@ class CustomAutoformerModel(AutoformerForPrediction):
         static_real_features: Optional[torch.Tensor] = None,
         output_attentions: Optional[bool] = None,
         output_hidden_states: Optional[bool] = None,
-    ) -> List[torch.Tensor]:
+    ) -> list[torch.Tensor]:
         r"""
         Predict the means and standard deviations of the probability distribution of High and Low values.
 
         Returns:
-            List[torch.Tensor]: means and stds, shape of each: (batch size, prediction_length, input features).
+            list[torch.Tensor]: means and stds, shape of each: (batch size, prediction_length, input features).
         """
         outputs = self(
             static_categorical_features=static_categorical_features,

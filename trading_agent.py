@@ -3,8 +3,6 @@ import numpy as np
 from model import CustomTransformerModel
 from utils import student_t_icdf
 
-from typing import List, Tuple, Union
-
 
 class TradingAgent():
     def __init__(
@@ -35,11 +33,11 @@ class TradingAgent():
         self.pending_position = None
 
     
-    def get_info(self) -> List[Union[int, float, List[float]]]:
+    def get_info(self) -> tuple[int, float, list[float]]:
         r"""
-        Returns: total trade, win rate, asset history.
+        Returns: total trade (int), win rate (float), asset history (list[float]).
         """
-        return [self.total_trade, self.win_cnt / (self.total_trade + 1e-9), self.asset_history]
+        return self.total_trade, self.win_cnt / (self.total_trade + 1e-9), self.asset_history
     
 
     def open_position(self, position: dict) -> None:
@@ -138,11 +136,11 @@ class TradingAgent():
         adjusted_prices: np.ndarray,
         adjusted_stoploss: np.ndarray,
         fee: float
-    ) -> Union[List[float], List[None]]:
+    ) -> list[float] | list[None]:
         """
         Long/Short based on max and min
 
-        Returns: List[float]: [entry_point, take_profit_point, stop_loss_point].\n
+        Returns: list[float]: [entry_point, take_profit_point, stop_loss_point].\n
             If there is no profitable trade, return list of None
         """
         maxima = np.argmax(adjusted_prices[0, :], axis=0)
@@ -169,7 +167,7 @@ class TradingAgent():
         return res
     
 
-    def __call__(self, data: List, current_prices: List[float]) -> None:
+    def __call__(self, data: list, current_prices: list[float]) -> None:
         r"""
         Trade.
 
@@ -274,11 +272,11 @@ class OptimizedTradingAgent(TradingAgent):
         self, 
         adjusted_prices: np.ndarray,
         adjusted_stoploss: np.ndarray
-    ) -> Union[List[float], List[None]]:
+    ) -> list[float] | list[None]:
         """
         Find an optimal list trades, but only return the first one.
 
-        Returns: List[float]: [entry_point, take_profit_point, stop_loss_point].\n
+        Returns: list[float]: [entry_point, take_profit_point, stop_loss_point].\n
             If there is no profitable trade, return list of None
         """
         n = adjusted_prices.shape[-1]
@@ -331,8 +329,8 @@ class OptimizedTradingAgent(TradingAgent):
 
     def __call__(
         self, 
-        data: List, 
-        current_prices: List[float], 
+        data: list, 
+        current_prices: list[float], 
         adjusted_prices: np.ndarray = None,
         adjusted_stoploss: np.ndarray = None
     ) -> None:

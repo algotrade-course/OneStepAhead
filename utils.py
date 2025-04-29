@@ -7,8 +7,6 @@ import scipy.stats as st
 
 from matplotlib import pyplot as plt
 
-from typing import List, Tuple
-
 
 def set_seed(seed: int = 42) -> None:
     random.seed(seed)
@@ -17,7 +15,7 @@ def set_seed(seed: int = 42) -> None:
     torch.cuda.manual_seed_all(seed)
 
 
-def maximum_drawdown(asset_history: List[float]) -> float:
+def maximum_drawdown(asset_history: list[float]) -> float:
     peak = -1e9
     mdd = 0
     for x in asset_history:
@@ -26,7 +24,7 @@ def maximum_drawdown(asset_history: List[float]) -> float:
     return mdd * 100
 
 
-def period_return(asset_history: List[float], period: int) -> List[float]:
+def period_return(asset_history: list[float], period: int) -> list[float]:
     returns = []
     n = len(asset_history)
     for i in range(0, n, period):
@@ -87,7 +85,7 @@ class NumpyTypeEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
     
 
-def output_results(results: Tuple[int, float, List[float]], dir: str = "./"):
+def output_results(results: tuple[int, float, list[float]], dir: str = "./"):
     """
     Args:
         results: (total_trades, win_rate, asset_history)

@@ -10,16 +10,14 @@ from dataset import StockPriceDateset, split_data
 from model import CustomTransformerModel, load_checkpoint
 from trading_agent import TradingAgent, OptimizedTradingAgent
 
-from typing import List, Tuple
-
 
 def backtest(
     trader: TradingAgent, 
     dataset: StockPriceDateset, 
-    adjusted_prices_list: List[np.ndarray] = None, 
-    adjusted_stoploss_list: List[np.ndarray] = None, 
+    adjusted_prices_list: list[np.ndarray] = None, 
+    adjusted_stoploss_list: list[np.ndarray] = None, 
     verbose: bool = False
-) -> Tuple[int, float, List[float]]:
+) -> tuple[int, float, list[float]]:
     """
     Args:
         adjusted_prices_list: pre-computed model's prediction.\
@@ -46,7 +44,7 @@ def backtest(
         else:
             trader(data, current_prices)
         
-        [total_trades, win_rate, asset_history] = trader.get_info()
+        total_trades, win_rate, asset_history = trader.get_info()
         if verbose:
             print(f"Testing {i + 1}/{len(dataset)}: trades {total_trades}, win rate {win_rate:.4f}, assest {asset_history[-1]:.4f}", end='\r')
 
@@ -54,7 +52,7 @@ def backtest(
     close_price = dataset[-1][1][-1][7].item()
     trader.close_all(close_price)
 
-    [total_trades, win_rate, asset_history] = trader.get_info()
+    total_trades, win_rate, asset_history = trader.get_info()
     if verbose:
         print(f"Testing Complete: trades {total_trades}, win rate {win_rate:.4f}, assest {asset_history[-1]:.4f}" + " " * 10)
 
