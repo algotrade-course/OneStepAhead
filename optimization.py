@@ -10,7 +10,7 @@ from multiprocessing import Process
 from torch.utils.data import DataLoader
 
 from configs import config
-from utils import set_seed, student_t_icdf, output_results
+from utils import set_seed, student_t_icdf, output_results, period_return, sharpe_ratio
 from dataset import StockPriceDateset, split_data
 from model import CustomTransformerModel, load_checkpoint
 from trading_agent import OptimizedTradingAgent
@@ -101,8 +101,11 @@ def backtest_wrapper(p_highs: float, p_lows: float, p_stoploss: float, using_dp:
     )
 
     [_, _, asset_history] = backtest(trader, dataset, adjusted_prices, adjusted_stoploss)
-    # print("\n===========123=======\n")
-    return asset_history[-1] # final assest
+
+    daily_returns = period_return(asset_history, period=49)
+    sharpe = sharpe_ratio(daily_returns, risk_free_rate=0.03, trading_days_per_year=252)
+
+    return sharpe
 
 
 def objective(trial):
