@@ -56,7 +56,8 @@ def predict(model, dataset: StockPriceDateset) -> tuple[torch.Tensor, torch.Tens
     stds = torch.cat(stds_list).permute((0, 2, 1)).cpu().numpy()
     dfs = torch.cat(stds_list).permute((0, 2, 1)).cpu().numpy()
 
-    torch.cuda.empty_cache()
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
 
     return stds, means, dfs
 
@@ -164,7 +165,7 @@ if __name__ == "__main__":
     model = CustomTransformerModel(config.model_config)
     load_checkpoint(config.model_path, model)
     model = model.eval()
-    model = model.cuda()
+    model = model.to(device)
 
     dataset = in_sample_set
     # (dataset_len, 2, 50)

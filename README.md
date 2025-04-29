@@ -79,16 +79,32 @@ if maximum - minimum > FEE:
 ### Setup Environment
 Create and activate virtual environment:
 ```shell
-python3 -m venv venv
-source venv/bin/activate # for Linux/MacOS
+python3 -m venv .venv
+source .venv/bin/activate # for Linux/MacOS
 .\venv\Scripts\activate.bat # for Windows command line
 .\venv\Scripts\Activate.ps1 # for Windows PowerShell
 which python3
 ```
 
-Install dependencies:
+Upgrade pip:
 ```shell
 pip3 install --upgrade pip
+```
+
+Install Pytorch:
+```shell
+# For Linux and Windows, if your device has Nvidia gpu
+pip3 install torch==2.6.0 torchvision==0.21.0 torchaudio==2.6.0 --index-url https://download.pytorch.org/whl/cu126
+
+# For Linux and Windows, if your device only has CPU
+pip3 install torch==2.6.0 torchvision==0.21.0 torchaudio==2.6.0 --index-url https://download.pytorch.org/whl/cpu
+
+# For MacOS
+pip install torch==2.6.0 torchvision==0.21.0 torchaudio==2.6.0
+```
+
+Install other dependencies:
+```shell
 pip3 install -r requirements.txt
 ```
 
