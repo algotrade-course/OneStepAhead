@@ -1,7 +1,8 @@
 import numpy as np
 
+from configs import config
 from model import CustomTransformerModel
-from utils import student_t_icdf
+from utils import student_t_icdf, set_seed
 
 
 class TradingAgent():
@@ -210,6 +211,7 @@ class TradingAgent():
         past_masks = past_masks.unsqueeze(0).to(device)
         future_additional_features = future_additional_features.unsqueeze(0).to(device)
 
+        set_seed(config.SEED)
         means, _, _ = self.model.generate(
             past_values=past_values, 
             past_time_features=past_additional_features, 
@@ -385,6 +387,7 @@ class OptimizedTradingAgent(TradingAgent):
             future_additional_features = future_additional_features.unsqueeze(0).to(device)
 
             # Predict future highs and lows
+            set_seed(config.SEED)
             means, stds, dfs = self.model.generate(
                 past_values=past_values, 
                 past_time_features=past_additional_features, 
@@ -392,9 +395,9 @@ class OptimizedTradingAgent(TradingAgent):
                 future_time_features=future_additional_features
             )
 
-            means = means.cpu().numpy().squeeze(0).T
-            stds = stds.cpu().numpy().squeeze(0).T
-            dfs = dfs.cpu().numpy().squeeze(0).T
+            means = means.squeeze(0).T.cpu().numpy()
+            stds = stds.squeeze(0).T.cpu().numpy()
+            dfs = dfs.squeeze(0).T.cpu().numpy()
 
             # adjust prices
             adjusted_prices = np.zeros_like(means)

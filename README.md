@@ -76,6 +76,18 @@ if maximum - minimum > FEE:
 
 ## Implementation
 
+### Note: Reproducibility
+The results are produced with a CUDA device. You may not be able to reproduce them on a CPU-only device.
+
+If you are using a CUDA device, set a debug environment variable to ensure reproducibility:
+
+```shell
+export CUBLAS_WORKSPACE_CONFIG=:4096:8 # for Linux
+
+set CUBLAS_WORKSPACE_CONFIG=:4096:8 # for Windows command line
+$env:CUBLAS_WORKSPACE_CONFIG = ":4096:8" # for Windows PowerShell
+```
+
 ### Setup Environment
 Create and activate virtual environment:
 ```shell

@@ -30,7 +30,7 @@ def predict(model, dataset: StockPriceDateset) -> tuple[torch.Tensor, torch.Tens
     stds_list = []
     dfs_list = []
 
-    dataloader = DataLoader(dataset, batch_size=16, shuffle=False, num_workers=4)
+    dataloader = DataLoader(dataset, batch_size=1, shuffle=False, num_workers=0)
 
     for i, (past_values, past_additional_features, past_masks, _, future_additional_features, _, _) in enumerate(dataloader):
         device = model.device
@@ -39,6 +39,7 @@ def predict(model, dataset: StockPriceDateset) -> tuple[torch.Tensor, torch.Tens
         past_masks = past_masks.to(device)
         future_additional_features = future_additional_features.to(device)
 
+        set_seed(config.SEED)
         means, stds, dfs = model.generate(
             past_values=past_values, 
             past_time_features=past_additional_features, 
@@ -52,10 +53,10 @@ def predict(model, dataset: StockPriceDateset) -> tuple[torch.Tensor, torch.Tens
         print(f"Predicting: {i + 1}/{len(dataloader)}", end='\r')
     print()
 
-    # (dataset_len, 50, 2)
     means = torch.cat(means_list).permute((0, 2, 1)).cpu().numpy()
     stds = torch.cat(stds_list).permute((0, 2, 1)).cpu().numpy()
     dfs = torch.cat(stds_list).permute((0, 2, 1)).cpu().numpy()
+    # (dataset_len, 2, 50)
 
     if torch.cuda.is_available():
         torch.cuda.empty_cache()
@@ -142,7 +143,14 @@ if __name__ == "__main__":
     print('Running on device: {}'.format(device))
 
     set_seed(config.SEED)
+    if "CUBLAS_WORKSPACE_CONFIG" in os.environ and os.environ["CUBLAS_WORKSPACE_CONFIG"] == ":4096:8":
+        torch.use_deterministic_algorithms(True)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
 
+    if config.results_dir != "":
+        os.makedirs(config.results_dir, exist_ok=True)
+        
     # Data Preparation
     with open(config.data_path, "r") as fin:
         data = json.load(fin)
@@ -206,12 +214,10 @@ if __name__ == "__main__":
     fig = plot_optimization_history(study, target_name="Sharpe Ratio")
     fig.write_image(os.path.join(config.results_dir, "optimization_history.png"), width=1200, height=675)
 
+
     # output best params
     best_params = study.best_trial.params
     print(f"Best trial: {study.best_trial.value}, params: {best_params}")
-
-    if config.results_dir != "":
-        os.makedirs(config.results_dir, exist_ok=True)
 
     params_path = os.path.join(config.results_dir, "best_params.json")
     with open(params_path, "w") as fout:

@@ -37,7 +37,7 @@ ASSEST_RATIO = 0.8
 
 
 # optimization
-TOTAL_PROCESSES = 20
+TOTAL_PROCESSES = 8
 n_startup_trials = 100
 n_trials = 1000
 
