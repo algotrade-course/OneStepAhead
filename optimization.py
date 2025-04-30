@@ -8,6 +8,7 @@ import numpy as np
 from joblib import Memory
 from multiprocessing import Process
 from torch.utils.data import DataLoader
+from optuna.visualization import plot_optimization_history
 
 from configs import config
 from utils import set_seed, student_t_icdf, output_results, period_return, sharpe_ratio
@@ -194,6 +195,16 @@ if __name__ == "__main__":
 
     study = optuna.load_study(study_name="parallel_reproducible_study", storage=STORAGE_PATH)
 
+    filtered_trials = [t for t in study.trials if t.value is not None and t.value > -10]
+
+    # Create a new in-memory study to store the filtered trials
+    filtered_study = optuna.create_study(direction=study.direction)
+    for trial in filtered_trials:
+        filtered_study.add_trial(trial)
+    # plot_optimization_history(study, target_name="Sharpe Ratio").show()
+
+    fig = plot_optimization_history(study, target_name="Sharpe Ratio")
+    fig.write_image(os.path.join(config.results_dir, "optimization_history.png"), width=1200, height=675)
 
     # output best params
     best_params = study.best_trial.params
