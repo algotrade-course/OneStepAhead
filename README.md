@@ -77,7 +77,7 @@ if maximum - minimum > FEE:
 ## Implementation
 
 ### Note: Reproducibility
-The results in this document are produced on a CUDA device (Nvidia RTX 3080Ti). Results on a CPU-only device may be different. Check out the results on an Intel Core Ultra 7 265K at `./results_cpu`.
+The results in this document were produced on a CUDA device (Nvidia RTX 3080Ti). Results on a CPU-only device may be different. Check out the results on an Intel Core Ultra 7 265K at `./results_cpu`.
 
 If you are using a CUDA device, set a debug environment variable to ensure reproducibility:
 
