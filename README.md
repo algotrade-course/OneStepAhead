@@ -77,12 +77,13 @@ if maximum - minimum > FEE:
 ## Implementation
 
 ### Note: Reproducibility
-The results in this document were produced on a CUDA device (Nvidia RTX 3080Ti). Results on a CPU-only device may be different. Check out the results on an Intel Core Ultra 7 265K at `./results_cpu`.
+The results in this document were produced on an Nvidia RTX 3080Ti. 
+We also provide the results on an CPU-only device with an Intel Core Ultra 7 265K at `./results_cpu`.
 
-If you are using a CUDA device, set a debug environment variable to ensure reproducibility:
+Set a debug environment variable to ensure reproducibility on GPU:
 
 ```shell
-export CUBLAS_WORKSPACE_CONFIG=:4096:8 # for Linux
+export CUBLAS_WORKSPACE_CONFIG=:4096:8 # for Linux/MacOS
 
 set CUBLAS_WORKSPACE_CONFIG=:4096:8 # for Windows command line
 $env:CUBLAS_WORKSPACE_CONFIG = ":4096:8" # for Windows PowerShell
@@ -266,11 +267,11 @@ $$ adjusted_{stoploss} = min(Q_L(p_L - p_{stoploss})) $$
 in case of LONG position.
 
 ### Optuna
-- Criterion: maximum ROI
+- Objective: Maximizing Sharpe ratio
 - Sampler: TPESampler
-- Number of startup trails: 100
-- Number of trails: 1000
-- Number of parallel processes: 20
+- Number of startup trails: 160
+- Number of trails: 1600
+- Number of parallel processes: 8
 - Parameters to search for:
     - $p_H$
     - $p_L$ 
