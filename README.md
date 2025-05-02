@@ -77,7 +77,7 @@ if maximum - minimum > FEE:
 ## Implementation
 
 ### Note: Reproducibility
-The results are produced with a CUDA device. You may not be able to reproduce them on a CPU-only device.
+The results in this document are produced on a CUDA device (Nvidia RTX 3080Ti). Results on a CPU-only device may be different. Check out the results on an Intel Core Ultra 7 265K at `./results_cpu`.
 
 If you are using a CUDA device, set a debug environment variable to ensure reproducibility:
 
@@ -105,7 +105,7 @@ pip3 install --upgrade pip
 
 Install Pytorch:
 ```shell
-# For Linux and Windows, if your device has Nvidia gpu
+# For Linux and Windows, if your device has a CUDA device
 pip3 install torch==2.6.0 torchvision==0.21.0 torchaudio==2.6.0 --index-url https://download.pytorch.org/whl/cu126
 
 # For Linux and Windows, if your device only has CPU
@@ -164,9 +164,9 @@ if you want to use the naive algorithm, or
 backtest_optimized_algo = True
 
 optimized_algo_params = {
-    "p_highs": 0.43000000000000005,
-    "p_lows": 0.62,
-    "p_stoploss": 0.5,
+    "p_highs": 0.39,
+    "p_lows": 0.66,
+    "p_stoploss": 0.01,
     "using_dp": False
 }
 ```
@@ -182,9 +182,9 @@ python3 backtest.py
 In `configs/config.py`, set the **number of parallel processes**, the **total number of startup trials** and the **total number of trial**:
 
 ```python
-TOTAL_PROCESSES = 20
-n_startup_trials = 100
-n_trials = 1000
+TOTAL_PROCESSES = 8
+n_startup_trials = 160
+n_trials = 1600
 ```
 
 Run the python script to start optimizing:
@@ -210,17 +210,17 @@ results_dir = "./results"
 
 |  **ROI** | **Trades** | **Win rate** |  **MDD**  | **Sharpe ratio** |
 |:--------:|:----------:|:------------:|:---------:|:----------------:|
-|  8.75% |    2545    |    3.18%   | -33.22% |      0.36      |
+|  0.05% |    88    |    3.41%   | -3.04% |      -1.03      |
 
-![](backtest_res/naive/in_sample/asset_history.png)
+![](results_gpu/in_sample_backtesting/asset_history.png)
 
 ### Out-of-sample
 
 |  **ROI** | **Trades** | **Win rate** |  **MDD**  | **Sharpe ratio** |
 |:--------:|:----------:|:------------:|:---------:|:----------------:|
-| 26.50% |    2721    |    4.89%   | -15.31% |      0.99    |
+| -0.49% |    55    |    1.82%   | -3.10% |      -1.09    |
 
-![](backtest_res/naive/out_of_sample/asset_history.png)
+![](results_gpu/out_of_sample_backtesting/asset_history.png)
 
 ## Optmization
 
@@ -280,9 +280,9 @@ in case of LONG position.
 ### Best Parameter Set
 | **Parameter** 	|      **Value**      	|
 |:-------------:	|:-------------------:	|
-|    $p_H$    	    |         0.43 	        |
-|     $p_L$    	    |         0.62        	|
-|   $p_{stoploss}$  	|         0.5         	|
+|    $p_H$    	    |         0.39 	        |
+|     $p_L$    	    |         0.66        	|
+|   $p_{stoploss}$  	|         0.01         	|
 |    using_dp   	|        False        	|
 
 
@@ -290,15 +290,15 @@ in case of LONG position.
 ### In-sample
 |  **Algorithm**  |    **ROI**   | **Trades** | **Win rate** |    **MDD**    | **Sharpe ratio** |
 |:---------------:|:------------:|:----------:|:------------:|:-------------:|:----------------:|
-|      Naive      |     8.75%    |    2545    |     3.18%    |    -33.22%    |       0.36       |
-| **_Optimized_** | **_31.33%_** | **_2485_** | **_50.78%_** | **_-54.87%_** |   **_0.7150_**   |
+|      Naive      |  0.05% |    88    |    3.41%   | -3.04% |      -1.03      |
+| **_Optimized_** | **_26.93%_** | **_139_** | **_8.63%_** | **_-4.00%_** |   **_2.57_**   |
 
-![](backtest_res/optimized/in_sample/asset_history.png)
+![](results_gpu/in_sample_optim/asset_history.png)
 
 ### Out-of-sample
 |  **Algorithm**  |    **ROI**   | **Trades** | **Win rate** |    **MDD**    | **Sharpe ratio** |
 |:---------------:|:------------:|:----------:|:------------:|:-------------:|:----------------:|
-|      Naive      |    26.50%    |    2721    |     4.89%    |    -15.31%    |       0.99       |
-| **_Optimized_** | **_78.38%_** | **_2678_** | **_53.51%_** | **_-33.13%_** |    **_1.27_**    |
+|      Naive      | -0.49% |    55    |    1.82%   | -3.10% |      -1.09    |
+| **_Optimized_** | **_12.95%_** | **_139_** | **_7.19%_** | **_-2.87%_** |    **_1.45_**    |
 
-![](backtest_res/optimized/out_of_sample/asset_history.png)
+![](results_gpu/out_of_sample_optim/asset_history.png)

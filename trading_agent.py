@@ -221,7 +221,7 @@ class TradingAgent():
 
 
         # Values in the model was divided by ref price, so now we multiply it back
-        means = means.cpu().numpy().squeeze(0).T
+        means = means.squeeze(0).T.cpu().numpy()
 
         [entry_point, take_profit_point, stop_loss_point] = self.one_best_trade(means, means, self.FEE)
         
@@ -378,8 +378,8 @@ class OptimizedTradingAgent(TradingAgent):
             future_additional_features
         ] = data
 
+        # not pre-computed -> predict
         if adjusted_prices is None: 
-            # Move data to device
             device = self.model.device
             past_values = past_values.unsqueeze(0).to(device)
             past_additional_features = past_additional_features.unsqueeze(0).to(device)
@@ -400,17 +400,15 @@ class OptimizedTradingAgent(TradingAgent):
             dfs = dfs.squeeze(0).T.cpu().numpy()
 
             # adjust prices
-            adjusted_prices = np.zeros_like(means)
-            adjusted_prices[0, :] = student_t_icdf(self.p_value_of_highs, means[0, :], stds[0, :], dfs[0, :]) # Highs
-            adjusted_prices[1, :] = student_t_icdf(self.p_value_of_lows, means[1, :], stds[1, :], dfs[1, :]) # Lows
-
-            # print(f"highs: max {np.max(adjusted_prices[0, :])} | min {np.min(adjusted_prices[0, :])}")
-            # print(f"lows: max {np.max(adjusted_prices[1, :])} | min {np.min(adjusted_prices[1, :])}")
-
-            adjusted_stoploss = np.zeros_like(means)
-            adjusted_stoploss[0, :] = student_t_icdf(self.p_value_of_highs + self.p_diff_of_stoploss, means[0, :], stds[0, :], dfs[0, :]) # Highs
-            adjusted_stoploss[1, :] = student_t_icdf(self.p_value_of_lows - self.p_diff_of_stoploss, means[1, :], stds[1, :], dfs[1, :]) # Lows
-
+            adjusted_prices = np.stack((
+                student_t_icdf(self.p_value_of_highs, means[0, :], stds[0, :], dfs[0, :]), # Highs
+                student_t_icdf(self.p_value_of_lows, means[1, :], stds[1, :], dfs[1, :]) # Lows
+            ))
+            
+            adjusted_stoploss = np.stack((
+                student_t_icdf(self.p_value_of_highs + self.p_diff_of_stoploss, means[0, :], stds[0, :], dfs[0, :]), # Highs
+                student_t_icdf(self.p_value_of_lows - self.p_diff_of_stoploss, means[1, :], stds[1, :], dfs[1, :]) # Lows
+            ))
         else:
             adjusted_prices = np.array(adjusted_prices) # copy
             adjusted_stoploss = np.array(adjusted_stoploss)

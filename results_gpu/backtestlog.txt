@@ -1,0 +1,16 @@
+In sample backtesting:
+Testing Complete: trades 88, win rate 0.0341, assest 1000.5446          
+Trades: 88
+Win rate: 3.4091%
+Assest: 1000.5446166992188
+accum_return_rate: 0.0545%
+maximum drawdown: -3.0378%
+sharpe: -1.0274
+Out of sample backtesting:
+Testing Complete: trades 55, win rate 0.0182, assest 995.0528          
+Trades: 55
+Win rate: 1.8182%
+Assest: 995.0527954101562
+accum_return_rate: -0.4947%
+maximum drawdown: -3.0995%
+sharpe: -1.0871

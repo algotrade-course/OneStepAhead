@@ -30,7 +30,7 @@ def predict(model, dataset: StockPriceDateset) -> tuple[torch.Tensor, torch.Tens
     stds_list = []
     dfs_list = []
 
-    dataloader = DataLoader(dataset, batch_size=1, shuffle=False, num_workers=0)
+    dataloader = DataLoader(dataset, batch_size=1, shuffle=False, num_workers=4)
 
     for i, (past_values, past_additional_features, past_masks, _, future_additional_features, _, _) in enumerate(dataloader):
         device = model.device
@@ -55,13 +55,13 @@ def predict(model, dataset: StockPriceDateset) -> tuple[torch.Tensor, torch.Tens
 
     means = torch.cat(means_list).permute((0, 2, 1)).cpu().numpy()
     stds = torch.cat(stds_list).permute((0, 2, 1)).cpu().numpy()
-    dfs = torch.cat(stds_list).permute((0, 2, 1)).cpu().numpy()
+    dfs = torch.cat(dfs_list).permute((0, 2, 1)).cpu().numpy()
     # (dataset_len, 2, 50)
 
     if torch.cuda.is_available():
         torch.cuda.empty_cache()
 
-    return stds, means, dfs
+    return means, stds, dfs
 
 @memory.cache
 def get_adjusted_highs(p):
@@ -213,7 +213,6 @@ if __name__ == "__main__":
 
     fig = plot_optimization_history(study, target_name="Sharpe Ratio")
     fig.write_image(os.path.join(config.results_dir, "optimization_history.png"), width=1200, height=675)
-
 
     # output best params
     best_params = study.best_trial.params

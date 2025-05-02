@@ -1,0 +1,18 @@
+Running on device: cpu
+Loaded model with epoch 63 and loss 4.6655
+In sample backtesting:
+Testing Complete: trades 927, win rate 0.0442, assest 926.8101          
+Trades: 927
+Win rate: 4.4229%
+Assest: 926.8101220702921
+accum_return_rate: -7.3190%
+maximum drawdown: -17.1131%
+sharpe: -0.9032
+Out of sample backtesting:
+Testing Complete: trades 1165, win rate 0.0438, assest 1050.4500          
+Trades: 1165
+Win rate: 4.3777%
+Assest: 1050.4499999999673
+accum_return_rate: 5.0450%
+maximum drawdown: -9.3205%
+sharpe: 0.2343

@@ -1,0 +1,17 @@
+Best trial: 2.5711039304425047, params: {'p_highs': 0.39, 'p_lows': 0.66, 'p_stoploss': 0.01, 'using_dp': 0}
+In sample backtesting:
+Testing Complete: trades 139, win rate 0.0863, assest 1269.2700          
+Trades: 139
+Win rate: 8.6331%
+Assest: 1269.269999999996
+accum_return_rate: 26.9270%
+maximum drawdown: -4.0027%
+sharpe: 2.5711
+Out of sample backtesting:
+Testing Complete: trades 139, win rate 0.0719, assest 1129.4700          
+Trades: 139
+Win rate: 7.1942%
+Assest: 1129.4699999999962
+accum_return_rate: 12.9470%
+maximum drawdown: -2.8739%
+sharpe: 1.4531

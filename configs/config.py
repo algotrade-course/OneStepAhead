@@ -38,16 +38,16 @@ ASSEST_RATIO = 0.8
 
 # optimization
 TOTAL_PROCESSES = 8
-n_startup_trials = 100
-n_trials = 1000
+n_startup_trials = 160
+n_trials = 1600
 
 
 # backtest
 backtest_optimized_algo = False # If false, use naive algorithm
 optimized_algo_params = {
-    "p_highs": 0.43000000000000005,
-    "p_lows": 0.62,
-    "p_stoploss": 0.5,
+    "p_highs": 0.39,
+    "p_lows": 0.66,
+    "p_stoploss": 0.01,
     "using_dp": False
 }
 

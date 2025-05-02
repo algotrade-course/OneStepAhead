@@ -56,7 +56,7 @@ def student_t_icdf(
     p: float, 
     means: torch.Tensor | np.ndarray, 
     stds: torch.Tensor | np.ndarray, 
-    df: float = 1
+    dfs: torch.Tensor | np.ndarray,
 ) -> torch.Tensor | np.ndarray:
     """
     Compute the inverse CDF (quantile) for a Student's t distribution with
@@ -71,7 +71,7 @@ def student_t_icdf(
     Returns:
       torch.Tensor: The quantiles corresponding to probability p
     """
-    quantile = st.t.ppf([p], df)[0]
+    quantile = st.t.ppf(p, df=dfs)
     
     return means + stds * quantile
 
