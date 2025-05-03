@@ -66,8 +66,9 @@ if __name__ == "__main__":
     set_seed(config.SEED)
     if "CUBLAS_WORKSPACE_CONFIG" in os.environ and os.environ["CUBLAS_WORKSPACE_CONFIG"] == ":4096:8":
         torch.use_deterministic_algorithms(True)
-    torch.backends.cudnn.deterministic = True
-    torch.backends.cudnn.benchmark = False
+    if device == torch.device('cuda:0'):
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
 
     # Data Preparation
     with open(config.data_path, "r") as fin:
