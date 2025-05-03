@@ -106,10 +106,10 @@ pip3 install --upgrade pip
 
 Install Pytorch:
 ```shell
-# For Linux and Windows, if your device has a CUDA device
+# For Linux and Windows, CUDA
 pip3 install torch==2.6.0 torchvision==0.21.0 torchaudio==2.6.0 --index-url https://download.pytorch.org/whl/cu126
 
-# For Linux and Windows, if your device only has CPU
+# For Linux and Windows, CPU-only
 pip3 install torch==2.6.0 torchvision==0.21.0 torchaudio==2.6.0 --index-url https://download.pytorch.org/whl/cpu
 
 # For MacOS
