@@ -116,16 +116,13 @@ def RMSEValidating(
         future_masks = future_masks.to(device)
 
         with torch.no_grad():
-            [means, stds] = model.generate(
+            means, _, _ = model.generate(
                 past_values=past_values, 
                 past_time_features=past_time_features, 
                 past_observed_mask=past_masks, 
                 future_time_features=future_additional_features
             )
-            # print(means.size())
             prediction = means
-            # predicted_samples = output.sequences
-            # prediction = torch.mean(predicted_samples, dim=1)
 
             mse = mse_fn(prediction, future_values)
             masked_mse = (torch.where(future_masks > 0, mse, torch.nan)).nansum()

@@ -3,7 +3,6 @@ import numpy as np
 
 from torch.utils.data import Dataset
 
-from typing import List
 
 def split_data(data, ratio):
     """

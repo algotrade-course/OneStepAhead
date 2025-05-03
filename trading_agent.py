@@ -1,7 +1,6 @@
 import numpy as np
 
 from configs import config
-from model import CustomTransformerModel
 from utils import student_t_icdf, set_seed
 
 
