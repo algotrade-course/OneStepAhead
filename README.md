@@ -80,10 +80,10 @@ if maximum - minimum > FEE:
 The results in this document were produced on an Nvidia RTX 3080Ti. 
 We also provide the results on an CPU-only device with an Intel Core Ultra 7 265K at `./results_cpu`.
 
-Set a debug environment variable to ensure reproducibility on GPU:
+Set a debug environment variable to ensure reproducibility on CUDA device:
 
 ```shell
-export CUBLAS_WORKSPACE_CONFIG=:4096:8 # for Linux/MacOS
+export CUBLAS_WORKSPACE_CONFIG=:4096:8 # for Linux
 
 set CUBLAS_WORKSPACE_CONFIG=:4096:8 # for Windows command line
 $env:CUBLAS_WORKSPACE_CONFIG = ":4096:8" # for Windows PowerShell
